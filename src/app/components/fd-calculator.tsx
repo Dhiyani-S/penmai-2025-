@@ -76,8 +76,6 @@ export default function FdCalculator() {
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
@@ -123,7 +121,7 @@ export default function FdCalculator() {
                 name="principal"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Investment Amount (₹)</FormLabel>
+                    <FormLabel>Investment Amount</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Landmark className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />

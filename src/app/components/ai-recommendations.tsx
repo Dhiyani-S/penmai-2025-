@@ -78,8 +78,6 @@ export default function AiRecommendations() {
   const formatCurrency = (amount: string) => {
     const numberAmount = parseFloat(amount.replace(/,/g, ''));
     return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(numberAmount);
@@ -124,7 +122,7 @@ export default function AiRecommendations() {
                 name="investmentAmount"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Planned Investment (₹)</FormLabel>
+                    <FormLabel>Planned Investment</FormLabel>
                     <FormControl>
                       <Input type="number" placeholder="e.g., 50000" {...field} />
                     </FormControl>
