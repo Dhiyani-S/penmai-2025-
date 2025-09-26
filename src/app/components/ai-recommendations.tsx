@@ -74,6 +74,16 @@ export default function AiRecommendations() {
       setIsLoading(false);
     }
   }
+  
+  const formatCurrency = (amount: string) => {
+    const numberAmount = parseFloat(amount.replace(/,/g, ''));
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(numberAmount);
+  };
 
   return (
     <Card className="w-full shadow-lg bg-primary/5">
@@ -166,7 +176,7 @@ export default function AiRecommendations() {
                         <p className="text-sm text-muted-foreground">Recommended Amount</p>
                         <p className="text-xl font-bold text-primary flex items-center justify-center gap-2">
                            <PiggyBank className="h-5 w-5 text-accent" />
-                           {`₹${result.recommendedAmount}`}
+                           {formatCurrency(result.recommendedAmount)}
                         </p>
                     </div>
                 </div>
