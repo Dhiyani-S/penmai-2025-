@@ -166,7 +166,7 @@ export default function AiRecommendations() {
                         <p className="text-sm text-muted-foreground">Recommended Amount</p>
                         <p className="text-xl font-bold text-primary flex items-center justify-center gap-2">
                            <PiggyBank className="h-5 w-5 text-accent" />
-                           {result.recommendedAmount}
+                           {`₹${result.recommendedAmount}`}
                         </p>
                     </div>
                 </div>
