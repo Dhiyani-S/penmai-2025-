@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { PieChart, Pie, Cell, Tooltip } from "recharts";
 import { Calculator, Landmark, BarChart, Percent, Calendar, TrendingUp, PiggyBank } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
 
 const formSchema = z.object({
   principal: z.coerce.number().positive({ message: "Amount must be greater than 0." }),
@@ -45,6 +47,7 @@ type FormValues = z.infer<typeof formSchema>;
 interface CalculationResult {
   maturityAmount: number;
   totalInterest: number;
+  principal: number;
 }
 
 export default function FdCalculator() {
@@ -68,16 +71,34 @@ export default function FdCalculator() {
     const maturityAmount = principal * Math.pow(1 + r / n, n * tenure);
     const totalInterest = maturityAmount - principal;
 
-    setResult({ maturityAmount, totalInterest });
+    setResult({ maturityAmount, totalInterest, principal });
   }
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
       currency: "INR",
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
     }).format(amount);
+  };
+
+  const chartData = result
+    ? [
+        { name: "Principal", value: result.principal, fill: "hsl(var(--primary))" },
+        { name: "Interest", value: result.totalInterest, fill: "hsl(var(--accent))" },
+      ]
+    : [];
+
+  const chartConfig = {
+    principal: {
+      label: "Principal",
+      color: "hsl(var(--primary))",
+    },
+    interest: {
+      label: "Interest",
+      color: "hsl(var(--accent))",
+    },
   };
 
   return (
@@ -183,21 +204,53 @@ export default function FdCalculator() {
               <div className="mt-4 rounded-lg border bg-secondary/50 p-6 space-y-4 animate-in fade-in-50">
                 <h3 className="text-lg font-semibold text-center text-primary">Your FD Maturity Details</h3>
                 <Separator />
-                <div className="grid grid-cols-2 gap-4 text-center">
-                    <div>
-                        <p className="text-sm text-muted-foreground">Maturity Amount</p>
-                        <p className="text-2xl font-bold text-primary flex items-center justify-center gap-2">
-                          <TrendingUp className="h-6 w-6 text-accent" />
-                          {formatCurrency(result.maturityAmount)}
-                        </p>
-                    </div>
-                     <div>
-                        <p className="text-sm text-muted-foreground">Total Interest</p>
-                        <p className="text-2xl font-bold text-primary flex items-center justify-center gap-2">
-                           <PiggyBank className="h-6 w-6 text-accent" />
-                          {formatCurrency(result.totalInterest)}
-                        </p>
-                    </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                  <div className="flex flex-col gap-4">
+                      <div className="text-center">
+                          <p className="text-sm text-muted-foreground">Maturity Amount</p>
+                          <p className="text-2xl font-bold text-primary flex items-center justify-center gap-2">
+                            <TrendingUp className="h-6 w-6 text-accent" />
+                            {formatCurrency(result.maturityAmount)}
+                          </p>
+                      </div>
+                      <div className="text-center">
+                          <p className="text-sm text-muted-foreground">Principal Amount</p>
+                          <p className="text-lg font-semibold text-foreground/90 flex items-center justify-center gap-2">
+                            {formatCurrency(result.principal)}
+                          </p>
+                      </div>
+                       <div className="text-center">
+                          <p className="text-sm text-muted-foreground">Total Interest</p>
+                          <p className="text-lg font-semibold text-foreground/90 flex items-center justify-center gap-2">
+                             <PiggyBank className="h-5 w-5 text-accent" />
+                            {formatCurrency(result.totalInterest)}
+                          </p>
+                      </div>
+                  </div>
+                  <div className="flex items-center justify-center">
+                    <ChartContainer
+                      config={chartConfig}
+                      className="mx-auto aspect-square h-[200px]"
+                    >
+                      <PieChart>
+                        <Tooltip
+                          cursor={false}
+                          content={<ChartTooltipContent hideLabel nameKey="name" formatter={(value) => formatCurrency(value as number)} />}
+                        />
+                        <Pie
+                          data={chartData}
+                          dataKey="value"
+                          nameKey="name"
+                          innerRadius={50}
+                          strokeWidth={5}
+                          >
+                           {chartData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.fill} />
+                          ))}
+                        </Pie>
+                      </PieChart>
+                    </ChartContainer>
+                  </div>
                 </div>
               </div>
             )}
