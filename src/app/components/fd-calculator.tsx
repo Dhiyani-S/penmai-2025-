@@ -75,10 +75,11 @@ export default function FdCalculator() {
   }
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-IN", {
+    const formattedAmount = new Intl.NumberFormat("en-IN", {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
+    return `₹${formattedAmount}`;
   };
 
   const chartData = result

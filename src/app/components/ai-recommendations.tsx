@@ -77,10 +77,11 @@ export default function AiRecommendations() {
   
   const formatCurrency = (amount: string) => {
     const numberAmount = parseFloat(amount.replace(/,/g, ''));
-    return new Intl.NumberFormat('en-IN', {
+    const formattedAmount = new Intl.NumberFormat('en-IN', {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(numberAmount);
+    return `₹${formattedAmount}`;
   };
 
   return (
